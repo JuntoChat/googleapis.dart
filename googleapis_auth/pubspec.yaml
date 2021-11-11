@@ -7,8 +7,12 @@ environment:
 
 dependencies:
   crypto: ^3.0.0
-  http: ^0.13.0
+  node_http:
+    git:
+      url: https://github.com/JuntoChat/node-interop.git
+      path: node_http
   http_parser: ^4.0.0
+  node_io: ^2.1.0
 
 dev_dependencies:
   test: ^1.16.0

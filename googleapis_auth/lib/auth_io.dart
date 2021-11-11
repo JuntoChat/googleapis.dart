@@ -2,9 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:io';
-
 import 'package:http/http.dart';
+import 'package:node_http/node_http.dart' as node_http;
+import 'package:node_io/node_io.dart';
 
 import 'src/adc_utils.dart';
 import 'src/auth_http_utils.dart';
@@ -46,7 +46,7 @@ Future<AutoRefreshingAuthClient> clientViaApplicationDefaultCredentials({
   Client? baseClient,
 }) async {
   if (baseClient == null) {
-    baseClient = Client();
+    baseClient = node_http.NodeClient();
   } else {
     baseClient = nonClosingClient(baseClient);
   }
@@ -67,15 +67,13 @@ Future<AutoRefreshingAuthClient> clientViaApplicationDefaultCredentials({
   // Attempt to use file created by `gcloud auth application-default login`
   File credFile;
   if (Platform.isWindows) {
-    credFile = File.fromUri(
-      Uri.directory(Platform.environment['APPDATA']!)
-          .resolve('gcloud/application_default_credentials.json'),
-    );
+    credFile = File(Uri.directory(Platform.environment['APPDATA']!)
+        .resolve('gcloud/application_default_credentials.json')
+        .toString());
   } else {
-    credFile = File.fromUri(
-      Uri.directory(Platform.environment['HOME']!)
-          .resolve('.config/gcloud/application_default_credentials.json'),
-    );
+    credFile = File(Uri.directory(Platform.environment['HOME']!)
+        .resolve('.config/gcloud/application_default_credentials.json')
+        .toString());
   }
   // Only try to load from credFile if it exists.
   if (await credFile.exists()) {
